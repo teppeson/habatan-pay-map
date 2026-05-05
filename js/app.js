@@ -79,7 +79,7 @@ function renderStores() {
     filteredStores.forEach(store => {
         // Add Marker
         const marker = L.marker([store.lat, store.lng])
-            .bindPopup(`<b>${store.name}</b><br>${store.category}<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank">Googleマップで見る</a>`)
+            .bindPopup(`<b>${store.name}</b><br>${store.category}<br>営業時間: ${store.business_hours || ''}<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank">Googleマップで見る</a>`)
             .addTo(map);
         markers.push(marker);
 
@@ -92,6 +92,7 @@ function renderStores() {
             <span class="store-category">${store.category}</span>
             <h3>${store.name}</h3>
             <p class="store-address">${store.address}</p>
+            ${store.business_hours ? `<div class="store-meta"><span class="store-distance">営業時間: ${store.business_hours}</span></div>` : ''}
             <div class="store-meta">
                 <span class="store-distance">${distStr}</span>
                 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank" class="btn-gmap">Googleマップ</a>
