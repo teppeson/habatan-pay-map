@@ -25,6 +25,9 @@ function initMap() {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    // Load stores data after map initialization
+    loadStores();
 }
 
 // Load Stores Data
@@ -152,5 +155,4 @@ document.getElementById('filter-radius').addEventListener('change', renderStores
 // Init
 window.onload = () => {
     initMap();
-    loadStores();
 };
