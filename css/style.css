@@ -1,0 +1,170 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+header {
+    background-color: #ffcc00;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+header h1 {
+    font-size: 1.2rem;
+    color: #d40000;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#map {
+    height: 40%;
+    width: 100%;
+    z-index: 1;
+}
+
+.controls {
+    padding: 10px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#btn-locate {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filter-group {
+    display: flex;
+    gap: 5px;
+}
+
+#search-name {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#filter-radius {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#store-list-container {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+}
+
+.list-header {
+    padding: 10px;
+    background: #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.list-header h2 {
+    font-size: 1rem;
+}
+
+#store-list {
+    list-style: none;
+}
+
+.store-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.store-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.store-category {
+    display: inline-block;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.store-address {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.store-meta {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.store-distance {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.btn-gmap {
+    display: inline-block;
+    padding: 5px 10px;
+    background: #34a853;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.info-msg {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+}
+
+footer {
+    padding: 5px;
+    background: #eee;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #777;
+}
