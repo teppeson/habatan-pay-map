@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>はばタンPay 周辺マップ (非公式)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>はばタンPay 周辺マップ</h1>
+        <p class="subtitle">中央区・兵庫区 飲食店/スーパー等</p>
+    </header>
+
+    <main>
+        <div id="map"></div>
+        
+        <div class="controls">
+            <button id="btn-locate">現在地を取得</button>
+            <div class="filter-group">
+                <input type="text" id="search-name" placeholder="店名検索...">
+                <select id="filter-radius">
+                    <option value="500">500m以内</option>
+                    <option value="1000" selected>1km以内</option>
+                    <option value="2000">2km以内</option>
+                    <option value="5000">5km以内</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="store-list-container">
+            <div class="list-header">
+                <h2>周辺の店舗</h2>
+                <span id="store-count">0件</span>
+            </div>
+            <ul id="store-list">
+                <li class="info-msg">現在地を取得すると、近い順に表示されます。</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p class="disclaimer">※本アプリは非公式です。最新情報は公式サイトをご確認ください。</p>
+        <p class="source">データ更新: 2026-05-05</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
