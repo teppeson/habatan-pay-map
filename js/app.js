@@ -52,15 +52,17 @@ function renderStores() {
     
     const searchTerm = document.getElementById('search-name').value.toLowerCase();
     const radius = parseInt(document.getElementById('filter-radius').value);
-    
+    const cafeChecked = document.getElementById('filter-cafe').checked;
+    const restaurantChecked = document.getElementById('filter-restaurant').checked;
+
     let filteredStores = stores.filter(store => {
         const matchesName = store.name.toLowerCase().includes(searchTerm);
         if (userLocation) {
             const dist = getDistanceMeters(userLocation.lat, userLocation.lng, store.lat, store.lng);
             store.distance = dist;
-            return matchesName && dist <= radius;
+            return matchesName && dist <= radius && (cafeChecked || restaurantChecked) && ((store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked));
         }
-        return matchesName;
+        return matchesName && (cafeChecked || restaurantChecked) && ((store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked));
     });
 
     if (userLocation) {
@@ -151,6 +153,8 @@ function locateUser() {
 document.getElementById('btn-locate').addEventListener('click', locateUser);
 document.getElementById('search-name').addEventListener('input', renderStores);
 document.getElementById('filter-radius').addEventListener('change', renderStores);
+document.getElementById('filter-cafe').addEventListener('change', renderStores);
+document.getElementById('filter-restaurant').addEventListener('change', renderStores);
 
 // Init
 window.onload = () => {
