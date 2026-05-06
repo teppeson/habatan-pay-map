@@ -161,7 +161,7 @@ function locateUser() {
                 fillOpacity: 0.8
             }).addTo(map).bindPopup("現在地").openPopup();
             
-            map.setView([userLocation.lat, userLocation.lng], 15);
+            map.setView([userLocation.lat, userLocation.lng], 17);
             
             btn.disabled = false;
             btn.textContent = '現在地を取得';
