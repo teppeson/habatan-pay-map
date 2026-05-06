@@ -57,6 +57,66 @@ function highlightStore(storeId) {
     }
 }
 
+// Check if store is currently open
+function isStoreOpen(store) {
+    if (!store.business_hours || store.business_hours === 'なし' || store.business_hours === '24時間営業') {
+        return true; 
+    }
+
+    const now = new Date();
+    const day = now.getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+    const daysMap = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
+    const todayName = daysMap[day];
+
+    // Check closed days
+    if (store.closed_days && store.closed_days !== 'なし' && store.closed_days !== '無し') {
+        if (store.closed_days.includes(todayName) || store.closed_days.includes('毎日')) {
+            return false;
+        }
+    }
+
+    // Check business hours (Expects format like "8:30 ～ 19:00" or "11:00～14:30、17:00～21:00")
+    try {
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const timeRanges = store.business_hours.split(/[、,]/);
+        
+        let isOpen = false;
+        timeRanges.forEach(range => {
+            const times = range.match(/(\d{1,2}):(\d{2})/g);
+            if (times && times.length >= 2) {
+                const [startH, startM] = times[0].split(':').map(Number);
+                const [endH, endM] = times[1].split(':').map(Number);
+                
+                let startMinutes = startH * 60 + startM;
+                let endMinutes = endH * 60 + endM;
+
+                // Handle overnight (e.g., 18:00 ～ 02:00)
+                if (endMinutes < startMinutes) {
+                    if (currentTime >= startMinutes || currentTime <= endMinutes) {
+                        isOpen = true;
+                    }
+                } else {
+                    if (currentTime >= startMinutes && currentTime <= endMinutes) {
+                        isOpen = true;
+                    }
+                }
+            } else if (range.includes('24時間')) {
+                isOpen = true;
+            }
+        });
+
+        // If we couldn't parse any times, assume open to be safe
+        if (timeRanges.length > 0 && !store.business_hours.match(/\d/)) {
+            return true;
+        }
+
+        return isOpen || !store.business_hours.match(/\d/); 
+    } catch (e) {
+        console.warn('Failed to parse business hours for:', store.name, e);
+        return true; // Default to open on error
+    }
+}
+
 // Render Stores on Map and List
 function renderStores() {
     // Clear existing markers
@@ -70,15 +130,19 @@ function renderStores() {
     const radius = parseInt(document.getElementById('filter-radius').value);
     const cafeChecked = document.getElementById('filter-cafe').checked;
     const restaurantChecked = document.getElementById('filter-restaurant').checked;
+    const openOnlyChecked = document.getElementById('filter-open-only').checked;
 
     let filteredStores = stores.filter(store => {
         const matchesName = store.name.toLowerCase().includes(searchTerm);
+        const matchesCategory = (store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked);
+        const matchesOpen = !openOnlyChecked || isStoreOpen(store);
+
         if (userLocation) {
             const dist = getDistanceMeters(userLocation.lat, userLocation.lng, store.lat, store.lng);
             store.distance = dist;
-            return matchesName && dist <= radius && (cafeChecked || restaurantChecked) && ((store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked));
+            return matchesName && dist <= radius && matchesCategory && matchesOpen;
         }
-        return matchesName && (cafeChecked || restaurantChecked) && ((store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked));
+        return matchesName && matchesCategory && matchesOpen;
     });
 
     if (userLocation) {
@@ -182,8 +246,12 @@ function updateCategoryCounts() {
     const cafeCount = stores.filter(store => store.category === 'カフェ・喫茶店').length;
     const restaurantCount = stores.filter(store => store.category === 'レストラン・食堂').length;
 
-    document.getElementById('filter-cafe-label').textContent = `カフェ・喫茶店 (${cafeCount})`;
-    document.getElementById('filter-restaurant-label').textContent = `レストラン・食堂 (${restaurantCount})`;
+    document.getElementById('filter-cafe-label').innerHTML = `<input type="checkbox" id="filter-cafe" ${document.getElementById('filter-cafe').checked ? 'checked' : ''}> カフェ等 (${cafeCount})`;
+    document.getElementById('filter-restaurant-label').innerHTML = `<input type="checkbox" id="filter-restaurant" ${document.getElementById('filter-restaurant').checked ? 'checked' : ''}> 食堂等 (${restaurantCount})`;
+    
+    // Re-bind event listeners since we replaced innerHTML
+    document.getElementById('filter-cafe').addEventListener('change', renderStores);
+    document.getElementById('filter-restaurant').addEventListener('change', renderStores);
 }
 
 // Event Listeners
@@ -192,6 +260,7 @@ document.getElementById('search-name').addEventListener('input', renderStores);
 document.getElementById('filter-radius').addEventListener('change', renderStores);
 document.getElementById('filter-cafe').addEventListener('change', renderStores);
 document.getElementById('filter-restaurant').addEventListener('change', renderStores);
+document.getElementById('filter-open-only').addEventListener('change', renderStores);
 
 // Init
 window.onload = () => {
