@@ -246,12 +246,8 @@ function updateCategoryCounts() {
     const cafeCount = stores.filter(store => store.category === 'カフェ・喫茶店').length;
     const restaurantCount = stores.filter(store => store.category === 'レストラン・食堂').length;
 
-    document.getElementById('filter-cafe-label').innerHTML = `<input type="checkbox" id="filter-cafe" ${document.getElementById('filter-cafe').checked ? 'checked' : ''}> カフェ等 (${cafeCount})`;
-    document.getElementById('filter-restaurant-label').innerHTML = `<input type="checkbox" id="filter-restaurant" ${document.getElementById('filter-restaurant').checked ? 'checked' : ''}> 食堂等 (${restaurantCount})`;
-    
-    // Re-bind event listeners since we replaced innerHTML
-    document.getElementById('filter-cafe').addEventListener('change', renderStores);
-    document.getElementById('filter-restaurant').addEventListener('change', renderStores);
+    document.getElementById('cafe-count-display').textContent = ` (${cafeCount})`;
+    document.getElementById('restaurant-count-display').textContent = ` (${restaurantCount})`;
 }
 
 // Event Listeners
