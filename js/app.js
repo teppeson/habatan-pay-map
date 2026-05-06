@@ -42,6 +42,21 @@ async function loadStores() {
     }
 }
 
+// Highlight a store in the list and scroll to it
+function highlightStore(storeId) {
+    // Remove highlight from all items
+    document.querySelectorAll('.store-item').forEach(item => {
+        item.classList.remove('highlight');
+    });
+
+    // Add highlight to the selected item
+    const targetLi = document.getElementById(`store-${storeId}`);
+    if (targetLi) {
+        targetLi.classList.add('highlight');
+        targetLi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
 // Render Stores on Map and List
 function renderStores() {
     // Clear existing markers
@@ -82,11 +97,18 @@ function renderStores() {
         const marker = L.marker([store.lat, store.lng])
             .bindPopup(`<b>${store.name}</b><br>${store.category}<br>営業時間: ${store.business_hours || ''}<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank">Googleマップで見る</a>`)
             .addTo(map);
+        
+        // Add click listener to marker for cross-linking
+        marker.on('click', () => {
+            highlightStore(store.id);
+        });
+
         markers.push(marker);
 
         // Add List Item
         const li = document.createElement('li');
         li.className = 'store-item';
+        li.id = `store-${store.id}`;
         const distStr = store.distance ? `${(store.distance / 1000).toFixed(2)}km` : '';
         
         li.innerHTML = `
@@ -105,6 +127,7 @@ function renderStores() {
         li.onclick = () => {
             map.setView([store.lat, store.lng], 16);
             marker.openPopup();
+            highlightStore(store.id);
         };
         listEl.appendChild(li);
     });

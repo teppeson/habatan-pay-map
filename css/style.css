@@ -192,3 +192,9 @@ footer {
     font-style: italic;
     color: #333;
 }
+
+.store-item.highlight {
+    background-color: #fff9c4;
+    border-left: 5px solid #ffcc00;
+    transition: background-color 0.3s ease;
+}
