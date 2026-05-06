@@ -53,7 +53,7 @@ function highlightStore(storeId) {
     const targetLi = document.getElementById(`store-${storeId}`);
     if (targetLi) {
         targetLi.classList.add('highlight');
-        targetLi.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetLi.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 

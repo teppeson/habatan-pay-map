@@ -111,6 +111,7 @@ main {
 .store-item {
     padding: 15px;
     border-bottom: 1px solid #eee;
+    scroll-margin-top: 45px;
 }
 
 .store-item h3 {
