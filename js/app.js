@@ -1,5 +1,5 @@
 let map;
-let markers = [];
+let markers = {}; // Store markers by store.id: { id: marker }
 let userLocation = null;
 let stores = [];
 
@@ -25,6 +25,9 @@ function initMap() {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    // Add listener for map movements
+    map.on('moveend', renderStores);
 
     // Load stores data after map initialization
     loadStores();
@@ -119,10 +122,6 @@ function isStoreOpen(store) {
 
 // Render Stores on Map and List
 function renderStores() {
-    // Clear existing markers
-    markers.forEach(m => map.removeLayer(m));
-    markers = [];
-    
     const listEl = document.getElementById('store-list');
     listEl.innerHTML = '';
     
@@ -132,17 +131,20 @@ function renderStores() {
     const restaurantChecked = document.getElementById('filter-restaurant').checked;
     const openOnlyChecked = document.getElementById('filter-open-only').checked;
 
+    const bounds = map.getBounds();
+
     let filteredStores = stores.filter(store => {
         const matchesName = store.name.toLowerCase().includes(searchTerm);
         const matchesCategory = (store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked);
         const matchesOpen = !openOnlyChecked || isStoreOpen(store);
+        const matchesBounds = bounds.contains([store.lat, store.lng]);
 
         if (userLocation) {
             const dist = getDistanceMeters(userLocation.lat, userLocation.lng, store.lat, store.lng);
             store.distance = dist;
-            return matchesName && dist <= radius && matchesCategory && matchesOpen;
+            return matchesName && dist <= radius && matchesCategory && matchesOpen && matchesBounds;
         }
-        return matchesName && matchesCategory && matchesOpen;
+        return matchesName && matchesCategory && matchesOpen && matchesBounds;
     });
 
     if (userLocation) {
@@ -153,23 +155,44 @@ function renderStores() {
 
     if (filteredStores.length === 0) {
         listEl.innerHTML = '<li class="info-msg">該当する店舗が見つかりませんでした。</li>';
+        // Remove all markers if no stores are filtered
+        Object.keys(markers).forEach(id => {
+            map.removeLayer(markers[id]);
+            delete markers[id];
+        });
         return;
     }
 
+    // DIFFING LOGIC FOR MARKERS
+    const filteredStoreIds = new Set(filteredStores.map(s => String(s.id)));
+
+    // 1. Remove markers that are no longer in the filtered list
+    Object.keys(markers).forEach(id => {
+        if (!filteredStoreIds.has(id)) {
+            map.removeLayer(markers[id]);
+            delete markers[id];
+        }
+    });
+
     filteredStores.forEach(store => {
-        // Add Marker
-        const marker = L.marker([store.lat, store.lng])
-            .bindPopup(`<b>${store.name}</b><br>${store.category}<br>営業時間: ${store.business_hours || ''}<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank">Googleマップで見る</a>`)
-            .addTo(map);
-        
-        // Add click listener to marker for cross-linking
-        marker.on('click', () => {
-            highlightStore(store.id);
-        });
+        const storeId = String(store.id);
+        let marker;
 
-        markers.push(marker);
+        // 2. Add new markers or reuse existing ones
+        if (!markers[storeId]) {
+            marker = L.marker([store.lat, store.lng])
+                .bindPopup(`<b>${store.name}</b><br>${store.category}<br>営業時間: ${store.business_hours || ''}<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank">Googleマップで見る</a>`)
+                .addTo(map);
+            
+            marker.on('click', () => {
+                highlightStore(store.id);
+            });
+            markers[storeId] = marker;
+        } else {
+            marker = markers[storeId];
+        }
 
-        // Add List Item
+        // Add List Item (List is still re-rendered completely as it's less expensive than DOM diffing for small lists)
         const li = document.createElement('li');
         li.className = 'store-item';
         li.id = `store-${store.id}`;
@@ -189,7 +212,7 @@ function renderStores() {
             </div>
         `;
         li.onclick = () => {
-            map.setView([store.lat, store.lng], 16);
+            map.setView([store.lat, store.lng], 18);
             marker.openPopup();
             highlightStore(store.id);
         };
