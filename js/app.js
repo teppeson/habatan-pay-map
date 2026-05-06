@@ -164,14 +164,14 @@ function locateUser() {
             map.setView([userLocation.lat, userLocation.lng], 18);
             
             btn.disabled = false;
-            btn.textContent = '現在地を取得';
+            btn.textContent = '現在地を取得（更新）';
             renderStores();
         },
         (error) => {
             console.error('Geolocation error:', error);
             alert('位置情報の取得に失敗しました。設定を確認してください。');
             btn.disabled = false;
-            btn.textContent = '現在地を取得';
+            btn.textContent = '現在地を取得（更新）';
         },
         { enableHighAccuracy: true }
     );
