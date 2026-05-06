@@ -168,3 +168,27 @@ footer {
     font-size: 0.7rem;
     color: #777;
 }
+
+.store-hours {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.store-url {
+    display: inline-block;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.store-closed {
+    font-weight: bold;
+    color: red;
+}
+
+.store-note {
+    font-style: italic;
+    color: #333;
+}

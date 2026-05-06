@@ -36,6 +36,7 @@ async function loadStores() {
         const response = await fetch('data/stores.json');
         stores = await response.json();
         renderStores();
+        updateCategoryCounts();
     } catch (error) {
         console.error('Error loading stores:', error);
     }
@@ -93,6 +94,9 @@ function renderStores() {
             <h3>${store.name}</h3>
             <p class="store-address">${store.address}</p>
             ${store.business_hours ? `<div class="store-meta"><span class="store-distance">営業時間: ${store.business_hours}</span></div>` : ''}
+            ${store.official_store_url && store.official_store_url.trim() !== '' ? `<div class="store-meta"><a href="${store.official_store_url}" target="_blank" rel="noopener noreferrer">店舗URL: 公式ページ</a></div>` : ''}
+            ${store.closed_days ? `<div class="store-meta"><span class="store-closed">定休日: ${store.closed_days}</span></div>` : ''}
+            ${store.note ? `<div class="store-meta"><span class="store-note">備考: ${store.note}</span></div>` : ''}
             <div class="store-meta">
                 <span class="store-distance">${distStr}</span>
                 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.address)}" target="_blank" class="btn-gmap">Googleマップ</a>
@@ -148,6 +152,15 @@ function locateUser() {
         },
         { enableHighAccuracy: true }
     );
+}
+
+// Update Category Counts
+function updateCategoryCounts() {
+    const cafeCount = stores.filter(store => store.category === 'カフェ・喫茶店').length;
+    const restaurantCount = stores.filter(store => store.category === 'レストラン・食堂').length;
+
+    document.getElementById('filter-cafe-label').textContent = `カフェ・喫茶店 (${cafeCount})`;
+    document.getElementById('filter-restaurant-label').textContent = `レストラン・食堂 (${restaurantCount})`;
 }
 
 // Event Listeners
