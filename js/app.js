@@ -131,8 +131,6 @@ function renderStores() {
     const restaurantChecked = document.getElementById('filter-restaurant').checked;
     const openOnlyChecked = document.getElementById('filter-open-only').checked;
 
-    const bounds = map.getBounds();
-
     let filteredStores = stores.filter(store => {
         const matchesName = store.name.toLowerCase().includes(searchTerm);
         const matchesCategory = (store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked);
