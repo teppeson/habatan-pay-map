@@ -137,14 +137,13 @@ function renderStores() {
         const matchesName = store.name.toLowerCase().includes(searchTerm);
         const matchesCategory = (store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked);
         const matchesOpen = !openOnlyChecked || isStoreOpen(store);
-        const matchesBounds = bounds.contains([store.lat, store.lng]);
 
         if (userLocation) {
             const dist = getDistanceMeters(userLocation.lat, userLocation.lng, store.lat, store.lng);
             store.distance = dist;
-            return matchesName && dist <= radius && matchesCategory && matchesOpen && matchesBounds;
+            return matchesName && dist <= radius && matchesCategory && matchesOpen;
         }
-        return matchesName && matchesCategory && matchesOpen && matchesBounds;
+        return matchesName && matchesCategory && matchesOpen;
     });
 
     if (userLocation) {
