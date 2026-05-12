@@ -19,8 +19,8 @@ function getDistanceMeters(lat1, lng1, lat2, lng2) {
 
 // Initialize Map
 function initMap() {
-    // Default center (Kobe Sannomiya)
-    map = L.map('map').setView([34.6946, 135.1944], 14);
+    // Default center (Near Kobe Station, between Chuo and Hyogo wards)
+    map = L.map('map').setView([34.6812, 135.1766], 13);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

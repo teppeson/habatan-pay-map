@@ -10,7 +10,7 @@
 <body>
     <header>
         <h1>はばタンPay 周辺マップ</h1>
-        <p class="subtitle">中央区 カフェ・飲食店 等</p>
+        <p class="subtitle">中央区・兵庫区 カフェ・飲食店 等</p>
     </header>
 
     <main>
@@ -22,14 +22,14 @@
                 <input type="text" id="search-name" placeholder="店名検索...">
                 <select id="filter-radius">
                     <option value="500">500m以内</option>
-                    <option value="1000" selected>1km以内</option>
-                    <option value="2000">2km以内</option>
+                    <option value="1000">1km以内</option>
+                    <option value="2000" selected>2km以内</option>
                     <option value="5000">5km以内</option>
                 </select>
             </div>
             <div class="category-filters">
                 <label id="filter-cafe-label"><input type="checkbox" id="filter-cafe" checked> カフェ等<span id="cafe-count-display"></span></label>
-                <label id="filter-restaurant-label"><input type="checkbox" id="filter-restaurant"> 食堂等<span id="restaurant-count-display"></span></label>
+                <label id="filter-restaurant-label"><input type="checkbox" id="filter-restaurant" checked> 食堂等<span id="restaurant-count-display"></span></label>
                 <label><input type="checkbox" id="filter-open-only" checked> 営業中のみ</label>
             </div>
         </div>
@@ -47,7 +47,7 @@
 
     <footer>
         <p class="disclaimer">※こちらは非公式テストアプリです。最新情報は<a href="https://habatanpay-plus-hyogo.com/store-search/" target="_blank" rel="noopener noreferrer">公式サイト</a>をご覧ください</p>
-        <p class="source">データ取得日: 2026年5月5日</p>
+        <p class="source">データ更新日: 2026年5月12日</p>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
