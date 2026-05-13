@@ -129,11 +129,17 @@ function renderStores() {
     const radius = parseInt(document.getElementById('filter-radius').value);
     const cafeChecked = document.getElementById('filter-cafe').checked;
     const restaurantChecked = document.getElementById('filter-restaurant').checked;
+    const fastfoodChecked = document.getElementById('filter-fastfood').checked;
+    const groceryChecked = document.getElementById('filter-grocery').checked;
     const openOnlyChecked = document.getElementById('filter-open-only').checked;
 
     let filteredStores = stores.filter(store => {
         const matchesName = store.name.toLowerCase().includes(searchTerm);
-        const matchesCategory = (store.category === 'カフェ・喫茶店' && cafeChecked) || (store.category === 'レストラン・食堂' && restaurantChecked);
+        const matchesCategory =
+            (store.category === 'カフェ・喫茶店' && cafeChecked) ||
+            (store.category === 'レストラン・食堂' && restaurantChecked) ||
+            (store.category === '軽食・ファストフード' && fastfoodChecked) ||
+            (store.category === '食料品（八百屋、肉屋等）' && groceryChecked);
         const matchesOpen = !openOnlyChecked || isStoreOpen(store);
 
         if (userLocation) {
@@ -265,9 +271,13 @@ function locateUser() {
 function updateCategoryCounts() {
     const cafeCount = stores.filter(store => store.category === 'カフェ・喫茶店').length;
     const restaurantCount = stores.filter(store => store.category === 'レストラン・食堂').length;
+    const fastfoodCount = stores.filter(store => store.category === '軽食・ファストフード').length;
+    const groceryCount = stores.filter(store => store.category === '食料品（八百屋、肉屋等）').length;
 
     document.getElementById('cafe-count-display').textContent = ` (${cafeCount})`;
     document.getElementById('restaurant-count-display').textContent = ` (${restaurantCount})`;
+    document.getElementById('fastfood-count-display').textContent = ` (${fastfoodCount})`;
+    document.getElementById('grocery-count-display').textContent = ` (${groceryCount})`;
 }
 
 // Event Listeners
@@ -276,6 +286,8 @@ document.getElementById('search-name').addEventListener('input', renderStores);
 document.getElementById('filter-radius').addEventListener('change', renderStores);
 document.getElementById('filter-cafe').addEventListener('change', renderStores);
 document.getElementById('filter-restaurant').addEventListener('change', renderStores);
+document.getElementById('filter-fastfood').addEventListener('change', renderStores);
+document.getElementById('filter-grocery').addEventListener('change', renderStores);
 document.getElementById('filter-open-only').addEventListener('change', renderStores);
 
 // Init
